@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Document</title>
+</head>
+
+<body>
+    <header>
+        <h1>ChatG</h1>
+    </header>
+    <main>
+        <div id="chat">
+        </div>
+        <div class="input-group">
+            <input type="text" name="" id="msg">
+            <input type="text" name="" id="username" placeholder="username">
+            <button id="btn">Enviar</button>
+        </div>
+
+    </main>
+
+</body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
+<script>
+    let socket = io("http://localhost:3030")
+    let btn = document.querySelector('#btn')
+    let msgField = document.querySelector('#msg')
+    let userField = document.querySelector('#username')
+    socket.on("disconnect", (socket) => {
+        console.log("Desconectou")
+    })
+    socket.on("showmsg",(data)=>{
+        let chat = document.querySelector("#chat")
+        let p = document.createElement('p')
+        p.innerHTML= `${data.user}: ${data.msg}`
+        chat.appendChild(p)
+    })
+
+
+    btn.addEventListener('click', function enviar() {
+        
+        let msg = msgField.value
+        let user = userField.value
+        
+        
+        socket.emit("msg", { msg: msg, user: user });
+        msgField.value= ""
+
+    })
+
+
+</script>
+
+</html>
